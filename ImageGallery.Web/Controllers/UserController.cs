@@ -1,4 +1,5 @@
-﻿using ImageGallery.Web.Models;
+﻿using ImageGallery.Web.DataAccessLayer;
+using ImageGallery.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Web.Mvc;
 
 namespace ImageGallery.Web.Controllers
 {
-    public class LoginController : Controller
+    public class UserController : Controller
     {
         // GET: Login
         public ActionResult Index()
@@ -23,7 +24,14 @@ namespace ImageGallery.Web.Controllers
             if (String.IsNullOrEmpty(user.Name) || String.IsNullOrEmpty(user.Password))
                 return null;
 
-            return View("Successful");
+            UserDbContext userDbContext = new UserDbContext();
+
+            User userDb = userDbContext.Users.Where(u => u.Name == user.Name).FirstOrDefault();
+
+            if(userDb == null)
+                return View("Error");
+            else
+                return View("Successful");
         }
     }
 }
